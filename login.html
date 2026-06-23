@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Animated Login Form</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* Animated Gradient Background */
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+            /* Enable 3D environment for children */
+            perspective: 1000px;
+        }
+
+        /* Background Animation Keyframes */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Login Card Container */
+        .login-container {
+            position: relative;
+            width: 400px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            
+            /* --- MOUSE MOVEMENT EFFECTS --- */
+            /* Using CSS variables updated by JS. 
+               Translates up to 30px, rotates up to 10 degrees. */
+            transform: translate(calc(var(--mx, 0) * 30px), calc(var(--my, 0) * 30px)) 
+                       rotateX(calc(var(--my, 0) * -10deg)) 
+                       rotateY(calc(var(--mx, 0) * 10deg));
+            
+            /* Smooth transitions so the snap back feels organic */
+            transition: transform 0.1s ease-out, opacity 1s ease;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        /* Card Entrance Fallback */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .login-container h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        /* Input Group Formatting */
+        .input-group {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 0;
+            font-size: 16px;
+            color: #fff;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #fff;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        /* Floating Label Logic */
+        .input-group label {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            pointer-events: none;
+            transition: 0.3s ease all;
+        }
+
+        /* Slide label up when input is focused or holds text */
+        .input-group input:focus ~ label,
+        .input-group input:valid ~ label {
+            top: -15px;
+            left: 0;
+            font-size: 12px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* Animated border line on focus */
+        .input-group::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background: #23d5ab;
+            transition: 0.4s ease;
+        }
+
+        .input-group:focus-within::after {
+            width: 100%;
+        }
+
+        /* Actions Row (Remember Me & Forgot Pass) */
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+            accent-color: #23a6d5;
+        }
+
+        .forgot-pass {
+            color: #fff;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .forgot-pass:hover {
+            text-decoration: underline;
+            color: #23d5ab;
+        }
+
+        /* Dynamic Animated Button */
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: 0.4s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .submit-btn:hover {
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(35, 213, 171, 0.4);
+        }
+
+        /* Hover slide-in effect for button background */
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #23a6d5, #23d5ab);
+            transition: 0.4s;
+            z-index: -1;
+        }
+
+        .submit-btn:hover::before {
+            left: 0;
+        }
+
+        /* Register Link */
+        .register-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .register-link a {
+            color: #23d5ab;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container" id="loginCard">
+        <h2>Login</h2>
+        <form action="#">
+            <div class="input-group">
+                <input type="text" required>
+                <label>Username</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" required>
+                <label>Password</label>
+            </div>
+
+            <div class="form-actions">
+                <label class="remember-me">
+                    <input type="checkbox"> Remember me
+                </label>
+                <a href="#" class="forgot-pass">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="submit-btn">Sign In</button>
+
+            <div class="register-link">
+                <p>Don't have an account? <a href="#">Register</a></p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const card = document.getElementById('loginCard');
+
+        window.addEventListener('mousemove', (e) => {
+            // Get percentage coordinates relative to center of screen (-1 to 1)
+            const x = (e.clientX / window.innerWidth) * 2 - 1;
+            const y = (e.clientY / window.innerHeight) * 2 - 1;
+
+            // Pass values directly to CSS variables
+            card.style.setProperty('--mx', x);
+            card.style.setProperty('--my', y);
+        });
+
+        // Optional: Smoothly snap form back to center when cursor leaves window
+        window.addEventListener('mouseleave', () => {
+            card.style.transition = "transform 0.5s ease-out";
+            card.style.setProperty('--mx', 0);
+            card.style.setProperty('--my', 0);
+        });
+        
+        // Reset the transition speed when mouse enters back in
+        window.addEventListener('mouseenter', () => {
+            card.style.transition = "transform 0.1s ease-out";
+        });
+    </script>
+</body>
+</html>
